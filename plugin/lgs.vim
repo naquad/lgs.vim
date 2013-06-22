@@ -157,7 +157,7 @@ function! s:LG(...)
     else
       if exists('g:lg_postfactum')
         let Func = function(g:lg_postfactum)
-        call Func(filter(map(files[1], 'v:va["filename"]'), '!empty(v:val)'))
+        call Func(filter(map(files[1], 'v:val["filename"]'), '!empty(v:val)'))
       endif
 
       call setqflist(files[1], 'a')
