@@ -22,8 +22,11 @@ OPTIONS                                             *lg-options* *lgs-options*
 
 
                                                                *'g:lg_php'*
-The only variable currently available is *g:lg_php* which indicates which
-PHP interpreter to use. By default it is just 'php'.
+*g:lg_php* indicates which PHP interpreter to use. By default it is just 'php'.
+
+                                                        *'g:lg_postfactum'*
+*g:lg_postfactum* should be a function name. Will be executed after
+generation. Parameter is list with updated/created files.
 
 ===============================================================================
 SUBCOMMANDS                                       *lg-commands* *lgs-commands*
