@@ -1,0 +1,169 @@
+*lgs.txt*       Laravel 4 Generator bundle interface. v0.1
+*LGS* *LG* *'lgs'* *'lg'*
+===============================================================================
+CONTENTS                                                      *lgs-contents*
+
+    1. Intro........................................|lgs-intro|
+    2. Options......................................|lgs-options|
+    3. Subcommands..................................|lgs-commands|
+    4. Known issues.................................|lgs-issues|
+
+===============================================================================
+INTRO                                                            *lgs-intro*
+
+Adds integration with Laravel 4 Generator bundle
+https://github.com/JeffreyWay/Laravel-4-Generators through LG command allowing
+user to generate various entities w/o leaving VIM. Convinient navigation
+through generated/updated files included. This is a very early release, please
+file bugs if you find any at https://github.com/naquad/lgs.vim .
+
+===============================================================================
+OPTIONS                                             *lg-options* *lgs-options*
+
+
+                                                               *'g:lg_php'*
+The only variable currently available is *g:lg_php* which indicates which
+PHP interpreter to use. By default it is just 'php'.
+
+===============================================================================
+SUBCOMMANDS                                       *lg-commands* *lgs-commands*
+                                                                        *LG*
+Overview:~
+
+    |LG_form|.......................................|lg-form|
+    |LG_model|......................................|lg-model|
+    |LG_migration|..................................|lg-migration|
+    |LG_resource|...................................|lg-resource|
+    |LG_scaffold|...................................|lg-scaffold|
+    |LG_seed|.......................................|lg-seed|
+    |LG_test|.......................................|lg-test|
+    |LG_view|.......................................|lg-view|
+
+-------------------------------------------------------------------------------
+Detailed description:~
+
+Each subcommand is mapped to 'artisan' generator: >
+ LG form      -> artisan generate:form
+ LG model     -> artisan generate:model
+ LG migration -> artisan generate:migration
+ LG resource  -> artisan generate:resource
+ LG scaffold  -> artisan generate:scaffold
+ LG seed      -> artisan generate:seed
+ LG test      -> artisan generate:test
+ LG view      -> artisan generate:view
+<
+
+All options that can be passed to commands are optional.
+Options are passed as is to 'artisan'.
+
+Every command opens QuickFix list of files that were update or created.
+In case if 'artisan' failed to create/update file that'll be indicated
+in QuickFix.
+
+In detail:
+
+                                                                   *LG_form*
+:LG form [options] <model_name>
+  Generates form and inserts it into current buffer at cursor position.
+  <model_name> is required.
+
+  Possible options:
+    --html={ul,li,ol}
+    --env=<environment>
+    --metod={create|edit}
+
+                                                                  *LG_model*
+:LG model [options] <name>
+  Generates model. New model <name> is required.
+
+  Possible options:
+    --env=<environment>
+    --path=<where_to_store_result>
+    --template=<template_to_use>
+
+                                                              *LG_migration*
+:LG migration [options] <migration_name> [optional fields specification]
+  Generates new migration. Extra arguments after name will be treated
+  as fields specification and will be passed to 'artisan' through
+  |--fields| option.
+
+  <migration_name> is required.
+
+  Possible options:
+    --env=<environment>
+    --path=<where_to_store_result>
+   
+                                                               *LG_resource*
+:LG resource [options] <resource_name> [optional fields specification]
+  Generates new resource with given name. Extra arguments after name will
+  be treated as fields specification and will be passed to 'artisan' through
+  |--fields| option.
+
+  <resource_name> is required.
+
+  Possible options:
+    --env=<environment>
+    --path=<where_to_store_result>
+
+                                                                   *LG_seed*
+:LG seed [options] <model_name>
+  Generates seed file for given model.
+
+  <model_name>  is required.
+
+  Possible options:
+    --env=<environment>
+    --path=<where_to_store_result>
+    --template=<template_to_use>
+
+                                                                   *LG_test*
+:LG test [options] <test_name>
+  Generates PHPUnit test.
+
+  <test_name> is required.
+
+  Possible options:
+    --env=<environment>
+    --path=<where_to_store_result>
+    --template=<template_to_use>
+
+                                                                   *LG_view*
+:LG view [options] <view_name>
+  Generates basic view.
+
+  <view_name> is required.
+
+  Possible options:
+    --env=<environment>
+    --path=<where_to_store_result>
+    --template=<template_to_use>
+
+                                                             *LG_controller*
+:LG controller [options] <controller_name>
+  Creates basic controller.
+
+  <controller_name> is required.
+
+  Possible options:
+    --env=<environment>
+    --path=<where_to_store_result>
+    --template=<template_to_use>
+
+===============================================================================
+KNOWN ISSUES                                                     *lg-issues* 
+
+First of all current discovery of models is very basic and fragile. It is a
+piece of code executed in `artisan ticker` console. You can find it
+in `misc/get_models.php`.
+
+Environment discovery is very dumb: mock `Application` class, load
+`bootstrap/start.php` catch `detectEnvironment`. In case if `detectEnvironment` is
+called after some work with `Application` instance it'll just crash and you
+won't get any completion.
+
+===============================================================================
+CREDITS                                                       *lg-credits* 
+
+Developed by Naquad <github.com/naquad>. Distributed under Vim's |license|.
+
+Project's homepage & GIT repository: https://github.com/naquad/lgs.vim
