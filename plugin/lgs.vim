@@ -101,7 +101,7 @@ let g:lgs_generators = {
 
 function! s:LG(...)
   if !lgs#artisan#SetArtisanPathIfNeed()
-    call lgs#artisan#Warn('Not a Laravel 4 file')
+    call utils#Warn('Not a Laravel 4 file')
     return
   endif
 
