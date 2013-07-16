@@ -104,7 +104,7 @@ function! lgs#artisan#RunArtisan(cmd, parse)
     if empty(error) " can we figure out what is the error?
       return [0, insert(lgs#utils#StringList(result), 'UNKNOWN ERROR', 0)]
     else " if yes then show pretty error
-      return [0, [substitute(error[1], '^\_s\+\|\_\s\+$', '', 'g')]
+      return [0, [substitute(error[1], '^\_s\+\|\_\s\+$', '', 'g')]]
     endif
   elseif a:parse
     let files = [1, []]
