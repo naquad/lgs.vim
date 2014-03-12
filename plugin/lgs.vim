@@ -95,7 +95,10 @@ let g:lgs_generators = {
   \     'options': s:default_with_template,
   \   },
   \   'controller': {
-  \     'options': s:default_with_template
+  \     'options': s:default_with_template,
+  \   },
+  \   'pivot': {
+  \     'options': s:default_options,
   \   },
   \ }
 
