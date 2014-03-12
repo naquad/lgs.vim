@@ -75,10 +75,28 @@ function! s:MigrationPattern(path)
   return substitute(a:path, '\(/database/migrations/\)\(.\+\)', '\=submatch(1) . "*_" . tolower(submatch(2))', '')
 endfunction
 
+function! s:PathJoin(path, base)
+  if has('win32')
+    if match('^[a-zA-Z]:\\') != -1
+      return a:path
+    endif
+
+    return substitute(a:base . '\\' . a:path, '\\\{2,}', '\\', 'g')
+  elseif a:path[0] == '/'
+    return a:path
+  else
+    return substitute(a:base . '/' . a:path, '/\{2,}', '\\', 'g')
+  endif
+endfunction
+
 " Runs artisan analyzing its output.
 " Lots of mess here, definitely requires refactoring. Once.
 function! lgs#artisan#RunArtisan(cmd, parse)
+  let oldpath = getcwd()
+  let base = fnamemodify(b:artisan, ':p:h')
+  exe 'cd ' .fnameescape(base)
   let result = system(a:cmd . ' 2>&1')
+  exe 'cd ' . fnameescape(oldpath)
 
   if v:shell_error " exception raised
     let error = matchlist(result, '\[.*Exception\]\_s\+\([^\n]\+\)')
@@ -86,12 +104,11 @@ function! lgs#artisan#RunArtisan(cmd, parse)
     if empty(error) " can we figure out what is the error?
       return [0, insert(lgs#utils#StringList(result), 'UNKNOWN ERROR', 0)]
     else " if yes then show pretty error
-      return [0, [substitute(error[1], '^\_s\+\|\_\s\+$', '', 'g')]
+      return [0, [substitute(error[1], '^\_s\+\|\_\s\+$', '', 'g')]]
     endif
   elseif a:parse
     let files = [1, []]
 
-    let base = fnamemodify(b:artisan, ':p:h') . '/'
     let bl = strlen(base) - 1
 
     " Here we're looking a file name in string.
@@ -102,12 +119,9 @@ function! lgs#artisan#RunArtisan(cmd, parse)
       let added = 0
 
       while 1
-        let path = line[i :]
-        if path[: bl] == base " make path relative if possible
-          let path = path[bl + 1 : ]
-        endif
+        let path = s:PathJoin(line[i :], base)
 
-        if match(path, '/database/migrations/') != -1 " is that migration?
+        if match(path, '[/\\]database[\\/]migrations[/\\]') != -1 " is that migration?
           let t = glob(s:MigrationPattern(path), 0, 1) " glob it first
           if !empty(t) " file found, use it
             let path = t[0]
@@ -115,6 +129,10 @@ function! lgs#artisan#RunArtisan(cmd, parse)
         endif
 
         if filereadable(path)
+          if path[: bl] == base " make path relative if possible
+            let path = path[bl + 2 : ]
+          endif
+
           let added = 1
           call add(files[1], {'filename': path, 'nr': len(files[1]), 'text': tolower(line[: i - 1])})
           break
@@ -127,7 +145,7 @@ function! lgs#artisan#RunArtisan(cmd, parse)
       endwhile
 
       if !added
-        call add(files[1], {'nr': len(files[1]), 'text': line})
+        call add(files[1], {'filename': '', 'nr': len(files[1]), 'text': line})
       endif
     endfor
 

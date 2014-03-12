@@ -104,7 +104,7 @@ let g:lgs_generators = {
 
 function! s:LG(...)
   if !lgs#artisan#SetArtisanPathIfNeed()
-    call lgs#artisan#Warn('Not a Laravel 4 file')
+    call utils#Warn('Not a Laravel 4 file')
     return
   endif
 
@@ -159,8 +159,8 @@ function! s:LG(...)
       call append('.', files[1])
     else
       if exists('g:lg_postfactum')
-        let func = function(g:lg_postfactum)
-        call func(filter(map(files[1], 'v:va["filename"]'), '!empty(v:val)'))
+        let Func = function(g:lg_postfactum)
+        call Func(filter(map(copy(files[1]), 'v:val["filename"]'), '!empty(v:val)'))
       endif
 
       call setqflist(files[1], 'a')
