@@ -100,6 +100,11 @@ let g:lgs_generators = {
   \   'pivot': {
   \     'options': s:default_options,
   \   },
+  \   'publish-templates': {
+  \     'options': {
+  \       'path': function('lgs#cmplf#DirCompletion')
+  \     }
+  \   }
   \ }
 
 function! s:LG(...)

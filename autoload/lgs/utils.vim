@@ -26,7 +26,9 @@ if &cp || exists('g:lgs_utils_autoload_done')
 endif
 
 function! lgs#utils#Warn(...)
-  echoerr join(map(copy(a:000), 'string(v:val)'), ' ')
+  echohl Error
+  echomsg join(map(copy(a:000), 'string(v:val)'), ' ')
+  echohl None
 endfunction
 
 " Sorts and filters list with completion options
