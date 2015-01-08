@@ -53,17 +53,6 @@ let s:field_type_completion_after_name = {
 
 " command line specification for each generator
 let g:lgs_generators = {
-  \   'form': {
-  \     'options': {
-  \       'method': ['create', 'edit'],
-  \       'html': ['ul', 'ol', 'li'],
-  \       'env': function('lgs#cmplf#Environments')
-  \     },
-  \     'arguments': {
-  \       1: function('lgs#cmplf#Models')
-  \     },
-  \     'requires': 'model name',
-  \   },
   \   'model': {
   \     'options': s:default_with_template,
   \   },
@@ -109,7 +98,7 @@ let g:lgs_generators = {
 
 function! s:LG(...)
   if !lgs#artisan#SetArtisanPathIfNeed()
-    call utils#Warn('Not a Laravel 4 file')
+    call lgs#utils#Warn('Not a Laravel 4 file')
     return
   endif
 
