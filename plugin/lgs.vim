@@ -88,6 +88,10 @@ let g:lgs_generators = {
   \   },
   \   'pivot': {
   \     'options': s:default_options,
+  \     'arguments': {
+  \        1: 0,
+  \        2: 0,
+  \      },
   \   },
   \   'publish-templates': {
   \     'options': {
@@ -95,6 +99,18 @@ let g:lgs_generators = {
   \     }
   \   }
   \ }
+
+function! s:ArgumentCount(generator)
+  if has_key(g:lgs_generators[a:generator], 'arguments')
+    if has_key(g:lgs_generators[a:generator].arguments, '*')
+      return 999999
+    endif
+
+    return max(keys(g:lgs_generators[a:generator].arguments))
+  else
+    return 1
+  endif
+endfunction
 
 function! s:LG(...)
   if !lgs#artisan#SetArtisanPathIfNeed()
@@ -136,11 +152,11 @@ function! s:LG(...)
   let requires = get(g:lgs_generators[generator], 'requires', generator)
   if empty(params.arguments)
     call lgs#utils#Warn(capitalized . ' requires ' . requires . ' name')
-  elseif len(params.arguments) > 1
+  elseif len(params.arguments) > s:ArgumentCount(generator)
     call lgs#utils#Warn(capitalized . ' takes only ' . requires . ' name')
   else
     let cmd .= ' ' . lgs#opts#SerializeOptions(params.options) . ' ' .
-          \ shellescape(params.arguments[0])
+          \ join(map(params.arguments, 'shellescape(v:val)'), ' ')
 
     let files = lgs#artisan#RunArtisan(cmd, generator != 'form')
 
